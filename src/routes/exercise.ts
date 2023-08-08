@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 const exerciseSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   sets: z.string(),
   reps: z.string(),
   muscleGroupId: z.number(),
@@ -42,12 +42,41 @@ export async function exerciseRoutes(app: FastifyInstance) {
     }
   })
 
+  app.put('/exercises', async (request, reply) => {
+    try {
+      const idSchema = z.object({
+        id: z.number(),
+      })
+      const { id } = idSchema.parse(request.body)
+      const { name, description, sets, reps, muscleGroupId, dayOfWeekId } =
+        exerciseSchema.parse(request.body)
+      const exercises = await prisma.exercise.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          description,
+          sets,
+          reps,
+          muscleGroupId,
+          dayOfWeekId,
+        },
+      })
+      reply.code(201).send(exercises)
+      return exercises
+    } catch (error) {
+      console.log(error)
+      reply.code(500).send({ message: 'Erro ao editar exercício' })
+    }
+  })
+
   app.get('/exercises/:id', async (request, reply) => {
     try {
-      const daySchema = z.object({
+      const muscleGroupIdSchema = z.object({
         id: z.string(),
       })
-      const { id } = daySchema.parse(request.params)
+      const { id } = muscleGroupIdSchema.parse(request.params)
       const exercise = await prisma.exercise.findMany({
         where: {
           muscleGroupId: parseInt(id),
@@ -58,6 +87,25 @@ export async function exerciseRoutes(app: FastifyInstance) {
     } catch (error) {
       console.log(error)
       reply.code(500).send({ message: 'Erro ao buscar exercícios por id' })
+    }
+  })
+
+  app.delete('/exercise', async (request, reply) => {
+    try {
+      const idSchema = z.object({
+        id: z.number(),
+      })
+      const { id } = idSchema.parse(request.body)
+      await prisma.exercise.delete({
+        where: {
+          id,
+        },
+      })
+
+      reply.code(201).send({ message: 'Exercício deletado' })
+    } catch (error) {
+      console.log(error)
+      reply.code(500).send({ message: 'Erro ao deletar exercício' })
     }
   })
 }
