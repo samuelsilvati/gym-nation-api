@@ -1,18 +1,16 @@
 import { FastifyInstance } from 'fastify'
 import { prisma } from '../lib/prisma'
+import { z } from 'zod'
 
-interface DayProps {
-  id: string
-}
-
-interface ExerciseRequestProps {
-  name: string
-  description: string
-  sets: string
-  reps: string
-  muscleGroupId: number
-  dayOfWeekId: number
-}
+const exerciseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  sets: z.string(),
+  reps: z.string(),
+  muscleGroupId: z.number(),
+  dayOfWeekId: z.number(),
+})
 
 export async function exerciseRoutes(app: FastifyInstance) {
   app.get('/exercises', async () => {
@@ -23,7 +21,8 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
   app.post('/exercises', async (request) => {
     const { name, description, sets, reps, muscleGroupId, dayOfWeekId } =
-      request.body as ExerciseRequestProps
+      exerciseSchema.parse(request.body)
+
     const exercises = await prisma.exercise.create({
       data: {
         name,
@@ -39,7 +38,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
   })
 
   app.get('/exercise/:id', async (request) => {
-    const { id } = request.params as DayProps
+    const { id } = exerciseSchema.parse(request.body)
     const newId = parseInt(id)
     const exercise = await prisma.exercise.findMany({
       where: {
