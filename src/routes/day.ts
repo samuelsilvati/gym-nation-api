@@ -17,18 +17,22 @@ export async function dayRoutes(app: FastifyInstance) {
     return days
   })
 
-  app.get('/day/:id', async (request) => {
-    const { id } = daySchema.parse(request.params)
-    console.log(id)
-    const day = await prisma.dayOfWeek.findUniqueOrThrow({
-      where: {
-        id: parseInt(id),
-      },
-      include: {
-        exercises: true,
-      },
-    })
+  app.get('/day/:id', async (request, reply) => {
+    try {
+      const { id } = daySchema.parse(request.params)
+      console.log(id)
+      const day = await prisma.dayOfWeek.findUniqueOrThrow({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          exercises: true,
+        },
+      })
 
-    return day
+      return day
+    } catch (error) {
+      reply.code(500).send({ message: 'Erro ao buscar os dias' })
+    }
   })
 }
