@@ -9,3 +9,29 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model DayOfWeek {
+  id        Int        @id @default(autoincrement())
+  name      String
+  exercises Exercise[]
+}
+
+model MuscleGroup {
+  id        Int        @id @default(autoincrement())
+  name      String
+  exercises Exercise[]
+}
+
+model Exercise {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  sets          String
+  reps          String
+  //  userId         Int
+  // user           User        @relation(fields: [userId], references: [id])
+  muscleGroupId Int
+  muscleGroup   MuscleGroup @relation(fields: [muscleGroupId], references: [id])
+  dayOfWeekId   Int
+  dayOfWeek     DayOfWeek   @relation(fields: [dayOfWeekId], references: [id])
+}
