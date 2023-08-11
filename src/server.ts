@@ -1,19 +1,26 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
+import jwt from '@fastify/jwt'
 import { exerciseRoutes } from './routes/exercise'
 import { groupRoutes } from './routes/group'
 import { dayRoutes } from './routes/day'
 import { userRoutes } from './routes/user'
+import { authRoutes } from './routes/auth'
 
 const app = fastify()
 
-app.register(exerciseRoutes)
-app.register(groupRoutes)
-app.register(dayRoutes)
 app.register(userRoutes)
+app.register(authRoutes)
+app.register(dayRoutes)
+app.register(groupRoutes)
+app.register(exerciseRoutes)
 
 app.register(cors, {
   origin: ['http://localhost:3000'],
+})
+
+app.register(jwt, {
+  secret: `${process.env.JWT_SECRET}`,
 })
 
 app
