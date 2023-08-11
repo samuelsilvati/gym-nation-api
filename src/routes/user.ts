@@ -45,6 +45,7 @@ export async function userRoutes(app: FastifyInstance) {
   })
 
   app.get('/users', async (request, reply) => {
+    await request.jwtVerify()
     const users = await prisma.user.findMany({
       include: {
         exercise: true,
@@ -67,6 +68,7 @@ export async function userRoutes(app: FastifyInstance) {
   })
 
   app.put('/user', async (request, reply) => {
+    await request.jwtVerify()
     const { name, email, password } = request.body as CreateUserRequest
 
     const passwordHash = await hash(password, 8)
@@ -91,6 +93,7 @@ export async function userRoutes(app: FastifyInstance) {
   })
 
   app.delete('/user', async (request, reply) => {
+    await request.jwtVerify()
     try {
       const id = request.user.sub
       await prisma.user.delete({
