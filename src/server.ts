@@ -3,12 +3,14 @@ import cors from '@fastify/cors'
 import { exerciseRoutes } from './routes/exercise'
 import { groupRoutes } from './routes/group'
 import { dayRoutes } from './routes/day'
+import { userRoutes } from './routes/user'
 
 const app = fastify()
 
 app.register(exerciseRoutes)
 app.register(groupRoutes)
 app.register(dayRoutes)
+app.register(userRoutes)
 
 app.register(cors, {
   origin: ['http://localhost:3000'],
