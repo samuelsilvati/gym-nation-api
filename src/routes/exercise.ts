@@ -12,13 +12,8 @@ const exerciseSchema = z.object({
 })
 
 export async function exerciseRoutes(app: FastifyInstance) {
-  app.get('/exercises', async (request, reply) => {
-    try {
-      const exercises = await prisma.exercise.findMany()
-      reply.code(201).send(exercises)
-    } catch (error) {
-      reply.code(500).send({ message: 'Erro ao buscar exercícios' })
-    }
+  app.addHook('preHandler', async (request) => {
+    await request.jwtVerify()
   })
 
   app.post('/exercises', async (request, reply) => {
@@ -33,12 +28,36 @@ export async function exerciseRoutes(app: FastifyInstance) {
           reps,
           muscleGroupId,
           dayOfWeekId,
+          userId: request.user.sub,
         },
       })
       reply.code(201).send(exercises)
       return exercises
     } catch (error) {
       reply.code(500).send({ message: 'Erro ao criar exercício' })
+    }
+  })
+
+  app.get('/exercises-by-day-of-week/:id', async (request, reply) => {
+    try {
+      const muscleGroupIdSchema = z.object({
+        id: z.string(),
+      })
+      const { id } = muscleGroupIdSchema.parse(request.params)
+
+      const exercises = await prisma.exercise.findMany({
+        where: {
+          userId: request.user.sub,
+          dayOfWeekId: parseInt(id),
+        },
+        include: {
+          dayOfWeek: true,
+        },
+      })
+
+      reply.code(201).send(exercises)
+    } catch (error) {
+      reply.code(500).send({ message: 'Erro ao buscar exercícios' })
     }
   })
 
@@ -50,7 +69,18 @@ export async function exerciseRoutes(app: FastifyInstance) {
       const { id } = idSchema.parse(request.body)
       const { name, description, sets, reps, muscleGroupId, dayOfWeekId } =
         exerciseSchema.parse(request.body)
-      const exercises = await prisma.exercise.update({
+
+      let exercises = await prisma.exercise.findUniqueOrThrow({
+        where: {
+          id,
+        },
+      })
+
+      if (exercises.userId !== request.user.sub) {
+        return reply.code(401).send({ message: 'Unauthorized operation' })
+      }
+
+      exercises = await prisma.exercise.update({
         where: {
           id,
         },
@@ -63,6 +93,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
           dayOfWeekId,
         },
       })
+
       reply.code(201).send(exercises)
       return exercises
     } catch (error) {
@@ -71,7 +102,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
     }
   })
 
-  app.get('/exercises/:id', async (request, reply) => {
+  app.get('/exercises-by-group/:id', async (request, reply) => {
     try {
       const muscleGroupIdSchema = z.object({
         id: z.string(),
@@ -80,6 +111,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
       const exercise = await prisma.exercise.findMany({
         where: {
           muscleGroupId: parseInt(id),
+          userId: request.user.sub,
         },
       })
 
@@ -96,6 +128,16 @@ export async function exerciseRoutes(app: FastifyInstance) {
         id: z.number(),
       })
       const { id } = idSchema.parse(request.body)
+
+      const exercise = await prisma.exercise.findUniqueOrThrow({
+        where: {
+          id,
+        },
+      })
+
+      if (exercise.userId !== request.user.sub) {
+        return reply.code(401).send({ message: 'Unauthorized operation' })
+      }
       await prisma.exercise.delete({
         where: {
           id,
