@@ -122,16 +122,16 @@ export async function exerciseRoutes(app: FastifyInstance) {
     }
   })
 
-  app.delete('/exercise', async (request, reply) => {
+  app.delete('/exercise/:id', async (request, reply) => {
     try {
       const idSchema = z.object({
-        id: z.number(),
+        id: z.string(),
       })
-      const { id } = idSchema.parse(request.body)
+      const { id } = idSchema.parse(request.params)
 
       const exercise = await prisma.exercise.findUniqueOrThrow({
         where: {
-          id,
+          id: parseInt(id),
         },
       })
 
@@ -140,7 +140,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
       }
       await prisma.exercise.delete({
         where: {
-          id,
+          id: parseInt(id),
         },
       })
 
