@@ -61,18 +61,19 @@ export async function exerciseRoutes(app: FastifyInstance) {
     }
   })
 
-  app.put('/exercises', async (request, reply) => {
+  app.put('/exercise/:id', async (request, reply) => {
     try {
       const idSchema = z.object({
-        id: z.number(),
+        id: z.string(),
       })
-      const { id } = idSchema.parse(request.body)
+      const { id } = idSchema.parse(request.params)
+      console.log(id)
       const { name, description, sets, reps, muscleGroupId, dayOfWeekId } =
         exerciseSchema.parse(request.body)
 
       let exercises = await prisma.exercise.findUniqueOrThrow({
         where: {
-          id,
+          id: parseInt(id),
         },
       })
 
@@ -82,7 +83,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
       exercises = await prisma.exercise.update({
         where: {
-          id,
+          id: parseInt(id),
         },
         data: {
           name,
