@@ -16,7 +16,7 @@ app.register(groupRoutes)
 app.register(exerciseRoutes)
 
 app.register(cors, {
-  origin: ['http://localhost:3000'],
+  origin: [`${process.env.CLIENT_URL}`],
 })
 
 app.register(jwt, {
