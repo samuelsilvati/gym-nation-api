@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(uuid())
-  name     String
-  email    String     @unique
-  password String
-  exercise Exercise[]
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  password      String
+  exercise      Exercise[]
+  ExerciseOrder ExerciseOrder[]
 }
 
 model DayOfWeek {
@@ -31,15 +32,25 @@ model MuscleGroup {
 }
 
 model Exercise {
-  id            Int         @id @default(autoincrement())
+  id            String          @id @default(uuid())
   name          String
   description   String?
   sets          String
   reps          String
   userId        String
-  user          User?       @relation(fields: [userId], references: [id])
+  user          User?           @relation(fields: [userId], references: [id])
   muscleGroupId Int
-  muscleGroup   MuscleGroup @relation(fields: [muscleGroupId], references: [id])
+  muscleGroup   MuscleGroup     @relation(fields: [muscleGroupId], references: [id])
   dayOfWeekId   Int
-  dayOfWeek     DayOfWeek   @relation(fields: [dayOfWeekId], references: [id])
+  dayOfWeek     DayOfWeek       @relation(fields: [dayOfWeekId], references: [id])
+  ExerciseOrder ExerciseOrder[]
+}
+
+model ExerciseOrder {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  exerciseId String
+  order      Int
+  user       User     @relation(fields: [userId], references: [id])
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
 }
