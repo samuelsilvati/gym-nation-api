@@ -73,7 +73,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
       let exercises = await prisma.exercise.findUniqueOrThrow({
         where: {
-          id: parseInt(id),
+          id,
         },
       })
 
@@ -83,7 +83,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
       exercises = await prisma.exercise.update({
         where: {
-          id: parseInt(id),
+          id,
         },
         data: {
           name,
@@ -132,7 +132,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
       const exercise = await prisma.exercise.findUniqueOrThrow({
         where: {
-          id: parseInt(id),
+          id,
         },
       })
 
@@ -141,7 +141,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
       }
       await prisma.exercise.delete({
         where: {
-          id: parseInt(id),
+          id,
         },
       })
 
