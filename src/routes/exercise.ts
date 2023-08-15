@@ -151,4 +151,52 @@ export async function exerciseRoutes(app: FastifyInstance) {
       reply.code(500).send({ message: 'Erro ao deletar exercício' })
     }
   })
+
+  app.post('/exercise-order', async (request, reply) => {
+    try {
+      const idSchema = z.object({
+        exerciseOrder: z.array(z.string()),
+      })
+      const { exerciseOrder } = idSchema.parse(request.body)
+      console.log(exerciseOrder)
+
+      const existingOrders = await prisma.exerciseOrder.findMany({
+        where: {
+          userId: request.user.sub,
+        },
+      })
+
+      const updates = exerciseOrder.map((exerciseId, index) => {
+        const existingOrder = existingOrders.find(
+          (order) => order.exerciseId === exerciseId,
+        )
+
+        if (existingOrder) {
+          return prisma.exerciseOrder.update({
+            where: {
+              id: existingOrder.id,
+            },
+            data: {
+              order: index + 1,
+            },
+          })
+        }
+
+        return prisma.exerciseOrder.create({
+          data: {
+            userId: request.user.sub,
+            exerciseId,
+            order: index + 1,
+          },
+        })
+      })
+
+      await prisma.$transaction(updates)
+
+      reply.code(201).send({ message: 'Exercício ordenado' })
+    } catch (error) {
+      console.log(error)
+      reply.code(500).send({ message: 'Erro ao ordenar exercícios' })
+    }
+  })
 }
