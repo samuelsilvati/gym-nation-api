@@ -151,6 +151,11 @@ export async function exerciseRoutes(app: FastifyInstance) {
       if (exercise.userId !== request.user.sub) {
         return reply.code(401).send({ message: 'Unauthorized operation' })
       }
+      await prisma.exerciseOrder.deleteMany({
+        where: {
+          exerciseId: id,
+        },
+      })
       await prisma.exercise.delete({
         where: {
           id,
