@@ -7,7 +7,7 @@
 
 Gerar base de dados local
  ```sh
- npx prisma migrate dev
+ npm prisma migrate dev
  ```
 Rodar a API
  ```sh
