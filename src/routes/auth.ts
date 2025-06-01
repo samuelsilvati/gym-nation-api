@@ -31,6 +31,7 @@ export async function authRoutes(app: FastifyInstance) {
     const token = app.jwt.sign(
       {
         name: userAlreadyExists.name,
+        role: userAlreadyExists.role,
       },
       {
         sub: userAlreadyExists.id,
