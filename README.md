@@ -7,13 +7,21 @@
 
 Gerar base de dados local
  ```sh
- npm prisma migrate dev
+ npx prisma migrate dev
  ```
+Gerenciar a base de dados com prisma
+```sh
+npx prisma studio
+```
+
+
 Rodar a API
  ```sh
  npx run dev
-
-#  API address
+ ```
+ 
+###  API address
+```
 HTTP server running on http://localhost:3333
  ```
  
