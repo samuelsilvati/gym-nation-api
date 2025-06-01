@@ -17,6 +17,9 @@ model User {
   password      String
   exercise      Exercise[]
   ExerciseOrder ExerciseOrder[]
+  role          String          @default("USER") // USER, ADMIN
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?       @default(now()) @updatedAt
 }
 
 model DayOfWeek {
@@ -26,24 +29,40 @@ model DayOfWeek {
 }
 
 model MuscleGroup {
-  id        Int        @id @default(autoincrement())
-  name      String
-  exercises Exercise[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  exercises    Exercise[]
+  ExercisesLib ExercisesLib[]
 }
 
 model Exercise {
-  id            String          @id @default(uuid())
+  id             String          @id @default(uuid())
+  name           String
+  description    String?
+  sets           String
+  reps           String
+  userId         String
+  user           User?           @relation(fields: [userId], references: [id])
+  exercisesLibId String?
+  exercisesLib   ExercisesLib?   @relation(fields: [exercisesLibId], references: [id], onDelete: SetNull)
+  muscleGroupId  Int
+  muscleGroup    MuscleGroup     @relation(fields: [muscleGroupId], references: [id])
+  dayOfWeekId    Int
+  dayOfWeek      DayOfWeek       @relation(fields: [dayOfWeekId], references: [id])
+  ExerciseOrder  ExerciseOrder[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt
+}
+
+model ExercisesLib {
+  id            String      @id @default(uuid())
   name          String
   description   String?
-  sets          String
-  reps          String
-  userId        String
-  user          User?           @relation(fields: [userId], references: [id])
   muscleGroupId Int
-  muscleGroup   MuscleGroup     @relation(fields: [muscleGroupId], references: [id])
-  dayOfWeekId   Int
-  dayOfWeek     DayOfWeek       @relation(fields: [dayOfWeekId], references: [id])
-  ExerciseOrder ExerciseOrder[]
+  muscleGroup   MuscleGroup @relation(fields: [muscleGroupId], references: [id])
+  Exercise      Exercise[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
 }
 
 model ExerciseOrder {
