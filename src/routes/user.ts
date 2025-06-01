@@ -3,16 +3,17 @@ import { prisma } from '../lib/prisma'
 import { hash } from 'bcrypt'
 
 interface CreateUserRequest {
+  id: string
   name: string
   email: string
   password: string
+  role: string
   googleId: string
-  id: string
 }
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/signup', async (request, reply) => {
-    const { name, email, password, googleId } =
+    const { name, email, password, googleId, role } =
       request.body as CreateUserRequest
     if (googleId) {
       return reply.code(200).send(googleId)
@@ -34,6 +35,7 @@ export async function userRoutes(app: FastifyInstance) {
             name,
             email,
             password: passwordHash,
+            role,
           },
         })
 
