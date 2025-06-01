@@ -6,6 +6,7 @@ import { groupRoutes } from './routes/group'
 import { dayRoutes } from './routes/day'
 import { userRoutes } from './routes/user'
 import { authRoutes } from './routes/auth'
+import { exerciseLibRoutes } from './routes/exerciseLib'
 
 const app = fastify()
 
@@ -14,6 +15,7 @@ app.register(authRoutes)
 app.register(dayRoutes)
 app.register(groupRoutes)
 app.register(exerciseRoutes)
+app.register(exerciseLibRoutes)
 
 app.register(cors, {
   origin: [`${process.env.CLIENT_URL}`],

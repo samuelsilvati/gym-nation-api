@@ -1,0 +1,50 @@
+### get days
+GET http://localhost:3333/day
+
+### get exercises group
+GET http://localhost:3333/groups
+
+### create user
+POST http://localhost:3333/signup
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "jondoe@email.com",
+  "password": "12345678",
+  "role": "ADMIN"
+}
+
+### login user
+POST http://localhost:3333/signin
+Content-Type: application/json
+
+{
+  "email": "jondoe@email.com",
+  "password": "12345678"
+}
+
+### get user exercises
+GET http://localhost:3333/exercises-by-group/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
+### create exercise
+POST http://localhost:3333/exercises
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
+{
+  "name": "Supino Inclinado com Halteres",
+  "description": "Exercício para trabalhar a parte superior do peito, utilizando halteres em um banco inclinado.",
+  "sets": "3",
+  "reps": "10",
+  "muscleGroupId": 1,
+  "dayOfWeekId": 1,
+  "userId": "3badaeb4-c617-4d57-b95d-7deb8cd830d6"
+}
+
+### get exercises Lib
+GET http://localhost:3333/exercisesLib
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
