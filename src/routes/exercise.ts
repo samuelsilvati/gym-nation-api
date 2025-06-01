@@ -7,6 +7,7 @@ const exerciseSchema = z.object({
   description: z.string().nullable(),
   sets: z.string(),
   reps: z.string(),
+  exercisesLibId: z.string().nullable().default(null),
   muscleGroupId: z.number(),
   dayOfWeekId: z.number(),
 })
@@ -18,8 +19,15 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
   app.post('/exercises', async (request, reply) => {
     try {
-      const { name, description, sets, reps, muscleGroupId, dayOfWeekId } =
-        exerciseSchema.parse(request.body)
+      const {
+        name,
+        description,
+        sets,
+        reps,
+        muscleGroupId,
+        dayOfWeekId,
+        exercisesLibId,
+      } = exerciseSchema.parse(request.body)
       const exercises = await prisma.exercise.create({
         data: {
           name,
@@ -28,13 +36,15 @@ export async function exerciseRoutes(app: FastifyInstance) {
           reps,
           muscleGroupId,
           dayOfWeekId,
+          exercisesLibId,
           userId: request.user.sub,
         },
       })
       reply.code(201).send(exercises)
       return exercises
     } catch (error) {
-      reply.code(500).send({ message: 'Erro ao criar exercício' })
+      console.log(error)
+      reply.code(500).send({ message: `Erro ao criar exercício ${error}` })
     }
   })
 
@@ -53,6 +63,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
         include: {
           dayOfWeek: true,
           ExerciseOrder: true,
+          exercisesLib: true,
         },
       })
 
@@ -125,6 +136,9 @@ export async function exerciseRoutes(app: FastifyInstance) {
         where: {
           muscleGroupId: parseInt(id),
           userId: request.user.sub,
+        },
+        include: {
+          exercisesLib: true,
         },
       })
 
