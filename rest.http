@@ -24,6 +24,11 @@ Content-Type: application/json
   "password": "12345678"
 }
 
+### get user info
+GET http://localhost:3333/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
 ### get user exercises
 GET http://localhost:3333/exercises-by-group/1
 Content-Type: application/json
