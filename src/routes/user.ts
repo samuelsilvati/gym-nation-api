@@ -11,6 +11,12 @@ interface CreateUserRequest {
   googleId: string
 }
 
+interface UpdateUserData {
+  name: string
+  email?: string
+  password?: string
+}
+
 export async function userRoutes(app: FastifyInstance) {
   app.post('/signup', async (request, reply) => {
     const { name, email, password, googleId, role } =
@@ -56,9 +62,9 @@ export async function userRoutes(app: FastifyInstance) {
     return reply.code(200).send(users)
   })
 
-  app.get('/user/:id', async (request, reply) => {
-    const { id } = request.params as CreateUserRequest
+  app.get('/user', async (request, reply) => {
     await request.jwtVerify()
+    const id = request.user.sub
     console.log(id)
     const user = await prisma.user.findUnique({
       where: {
@@ -71,24 +77,32 @@ export async function userRoutes(app: FastifyInstance) {
 
   app.put('/user', async (request, reply) => {
     await request.jwtVerify()
-    const { name, email, password } = request.body as CreateUserRequest
-
-    const passwordHash = await hash(password, 8)
-
+    const { name, email, password } = request.body as UpdateUserData
+    if (name === undefined) {
+      return reply.code(400).send({ message: 'Nenhuma informação foi enviada' })
+    }
     try {
       const id = request.user.sub
-      const editUser = await prisma.user.update({
+      const updateData: UpdateUserData = {
+        name,
+      }
+
+      if (name) {
+        updateData.email = email
+      }
+
+      if (password) {
+        updateData.password = await hash(password, 8)
+      }
+
+      await prisma.user.update({
         where: {
           id,
         },
-        data: {
-          name,
-          email,
-          password: passwordHash,
-        },
+        data: updateData,
       })
 
-      reply.code(200).send(editUser)
+      reply.code(200).send({ message: 'Editado com sucesso' })
     } catch (err) {
       reply.code(500).send({ message: 'Erro ao editar dados' })
     }
