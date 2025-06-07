@@ -48,3 +48,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb
 GET http://localhost:3333/exercisesLib
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
+### post exercise in lib
+POST http://localhost:3333/exercisesLib
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
+{
+  "name": "Supino Inclinado com Halteres",
+  "description": "Exercício para trabalhar a parte superior do peito, utilizando halteres em um banco inclinado.",
+  "muscleGroupId": 1
+}
+
+### edit exercise in lib
+PUT http://localhost:3333/exerciseLib/b1484e12-eec9-4046-959e-604c1ddb794c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoiQURNSU4iLCJzdWIiOiIzYmFkYWViNC1jNjE3LTRkNTctYjk1ZC03ZGViOGNkODMwZDYiLCJpYXQiOjE3NDg3MzIxNzQsImV4cCI6MTc0OTMzNjk3NH0.bSt7Fofq5zLSfht7LHdJrjpilUMR1siDvYfKzcLkj5g
+
+{
+  "name": "Supino Inclinado com Halteres",
+  "description": "Exercício para trabalhar a parte superior do peito, utilizando halteres em um banco inclinado.",
+  "muscleGroupId": 1
+}
