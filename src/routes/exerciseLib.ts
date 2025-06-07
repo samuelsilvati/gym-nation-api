@@ -35,7 +35,11 @@ export async function exerciseLibRoutes(app: FastifyInstance) {
 
   app.get('/exercisesLib', async (request, reply) => {
     try {
-      const exercises = await prisma.exercisesLib.findMany({})
+      const exercises = await prisma.exercisesLib.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
 
       reply.code(200).send(exercises)
     } catch (error) {
