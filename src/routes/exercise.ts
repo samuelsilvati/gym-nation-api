@@ -54,10 +54,11 @@ export async function exerciseRoutes(app: FastifyInstance) {
         id: z.string(),
       })
       const { id } = dayOfWeekIdSchema.parse(request.params)
+      const { traineeId } = request.query as { traineeId?: string }
 
       const exercises = await prisma.exercise.findMany({
         where: {
-          userId: request.user.sub,
+          userId: traineeId || request.user.sub,
           dayOfWeekId: parseInt(id),
         },
         include: {
@@ -127,15 +128,17 @@ export async function exerciseRoutes(app: FastifyInstance) {
   })
 
   app.get('/exercises-by-group/:id', async (request, reply) => {
+    const muscleGroupIdSchema = z.object({
+      id: z.string(),
+    })
+    const { id } = muscleGroupIdSchema.parse(request.params)
+    const { traineeId } = request.query as { traineeId?: string }
+
     try {
-      const muscleGroupIdSchema = z.object({
-        id: z.string(),
-      })
-      const { id } = muscleGroupIdSchema.parse(request.params)
       const exercise = await prisma.exercise.findMany({
         where: {
           muscleGroupId: parseInt(id),
-          userId: request.user.sub,
+          userId: traineeId || request.user.sub,
         },
         include: {
           exercisesLib: true,
@@ -145,7 +148,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
       reply.code(201).send(exercise)
     } catch (error) {
       console.log(error)
-      reply.code(500).send({ message: 'Erro ao buscar exercícios por id' })
+      reply.code(500).send({ message: 'Erro ao buscar exercícios' })
     }
   })
 
