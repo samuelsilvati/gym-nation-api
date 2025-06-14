@@ -19,6 +19,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
 
   app.post('/exercises', async (request, reply) => {
     try {
+      const { traineeId } = request.query as { traineeId?: string }
       const {
         name,
         description,
@@ -37,7 +38,7 @@ export async function exerciseRoutes(app: FastifyInstance) {
           muscleGroupId,
           dayOfWeekId,
           exercisesLibId,
-          userId: request.user.sub,
+          userId: traineeId || request.user.sub,
         },
       })
       reply.code(201).send(exercises)
