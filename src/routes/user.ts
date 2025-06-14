@@ -56,7 +56,11 @@ export async function userRoutes(app: FastifyInstance) {
     await request.jwtVerify()
     const users = await prisma.user.findMany({
       include: {
-        exercise: true,
+        exercise: {
+          include: {
+            exercisesLib: true,
+          },
+        },
       },
     })
     return reply.code(200).send(users)
